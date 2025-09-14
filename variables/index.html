@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Arithmetic and Math Operators Calculator</title>
+	</head>
+	<body>
+		<h1>Arithmetic and Math Operators Calculator</h1>
+		<hr>
+		
+		<h2>Simple Increment/Decrement</h2>
+		<p>Simple counter:<span id='countResult'>0</span></p>
+		<button onclick='countUp()'>Up</button>
+		<button onclick='countDown()'>Down</button>
+		<br><br><hr>
+		
+		<h2>Compound Assignment</h2>
+		<p><label>Count by </label>
+		<input type='text' value='2' size='1' id='countByValue'>
+		<span>: <span id='countByResult'>0</span></span></p>
+		<button onclick='countUpBy()'>Up</button>
+		<button onclick='countDownBy()'>Down</button>
+		<br><br><hr>
+	
+		<h2>Arithmetic Operators</h2>
+		<p>Result: <span id='arithmeticResult'></span></p>
+		<p><label for='op1'>Operand 1:</label><input type='text' id='op1'></p>
+		<p><label for='op2'>Operand 2:</label><input type='text' id='op2'></p>	
+		<button onclick='add()'>+</button>
+		<button onclick='subtract()'>-</button>
+		<button onclick='multiply()'>*</button>
+		<button onclick='divide()'>/</button>
+		<button onclick='modulo()'>%</button>
+		<br><br><hr>
+		
+		<h2>Math Object Functions</h2>
+		<p>Result: <span id='mathResult'></span></p>
+		<p><label for='mathOp'>Operand:</label><input type='text' id='mathOp'></p>
+		<button onclick='pi()'>Pi</button>
+		<button onclick='sine()'>Sine</button>
+		<button onclick='squareRoot()'>Square Root</button>
+		<button onclick='random()'>Random</button>
+		
+		<script>
+			// TODO: Variables Introduction
+		
+			// TODO: Basic type tests
+			// string: 
+			
+			// number: 
+			
+			// BigInt: 
+			
+			// boolean: 
+			
+			// undefined: 
+			
+			// null: 
+			
+			// symbol: 
+						
+			// object: 
+			
+			
+			// TODO: Common conversion: string to number
+			
+								
+			// Increment/Decrement
+			let count = 0;
+			function countUp() {
+				// TODO: Increment count
+                count +=1;
+				
+				document.getElementById('countResult').innerHTML = count;
+			}
+			
+			function countDown() {
+				// TODO: Decrement count
+                count -=1;
+				
+				document.getElementById('countResult').innerHTML = count;
+			}
+			
+			// Compound assignment
+			let countBy = 0;			
+			function countUpBy() {
+				let n = document.getElementById('countByValue').value;
+				// TODO: Compound assignment addition
+				count +=n;
+				document.getElementById('countByResult').innerHTML = countBy;
+			}
+			
+			function countDownBy() {
+				let n = document.getElementById('countByValue').value;
+				// TODO: Compound assignment subtraction
+				count +=n;
+				document.getElementById('countByResult').innerHTML = countBy;
+			}
+			
+			// Arithmetic operators
+			function add() {
+				let op1 = document.getElementById('op1').value;
+				let op2 = document.getElementById('op2').value;
+				// TODO: Addition operation
+				const result = parseFloat(op1) + parseFloat(op2);
+				document.getElementById('arithmeticResult').innerHTML = result;
+			}
+			
+			function subtract() {
+				let op1 = document.getElementById('op1').value;
+				let op2 = document.getElementById('op2').value;
+				// TODO: Subtraction operation
+				const result = parseFloat(op1) - parseFloat(op2);
+				document.getElementById('arithmeticResult').innerHTML = result;
+			}
+			
+			function multiply() {
+				let op1 = document.getElementById('op1').value;
+				let op2 = document.getElementById('op2').value;
+				// TODO: Multiplication operation
+				const result = parseFloat(op1) * parseFloat(op2);
+				document.getElementById('arithmeticResult').innerHTML = result;
+			}
+			
+			function divide() {
+				let op1 = document.getElementById('op1').value;
+				let op2 = document.getElementById('op2').value;
+				// TODO: Division operation
+				const result = parseFloat(op1) / parseFloat(op2);
+				document.getElementById('arithmeticResult').innerHTML = result;
+			}
+			
+			function modulo() {
+				let op1 = document.getElementById('op1').value;
+				let op2 = document.getElementById('op2').value;
+				// TODO: Modular division operation
+				const result = parseFloat(op1) % parseFloat(op2);
+				document.getElementById('arithmeticResult').innerHTML = result;
+			}
+			
+			// Math object			
+			function pi() {
+				// TODO: Pi
+				const result = Math.PI;
+				document.getElementById('mathResult').innerHTML = result;
+			}
+			
+			function sine() {
+				let op = parseFloat(document.getElementById('mathOp').value);
+				// TODO: Sine
+				const result = Math.sin(op);
+				document.getElementById('mathResult').innerHTML = result;
+			}
+			
+			function squareRoot() {
+				let op = parseFloat(document.getElementById('mathOp').value);
+				// TODO: Square root
+				const result = Math.sqrt(op)
+				document.getElementById('mathResult').innerHTML = result;
+			}
+			
+			function random() {
+				// TODO: Random numbers
+                const result = Math.random(0,9);
+				document.getElementById('mathResult').innerHTML = result;
+			}			
+		</script>
+	</body>
+</html>

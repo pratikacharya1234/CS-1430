@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Edit</title>
+</head>
+<body>
+    <!--Heading-->
+    <header>
+        <h1>Edit Profile Page</h1>
+    </header>
+
+    <!--main-->
+    <main>
+        <h2>Update Page Content</h2>
+
+        <form>
+            <p>Customer Name : <span id="name"></span></p>
+            <img alt="customer_image" id="profile">
+            <input type="text">
+            <label for="imageURL">Image URL: </label><input id="imageURL" type="text">
+        </form>
+
+
+        <button onclick="loadImage()">Load</button>
+        <button onclick="document.write('<p>Page aborted.</p>')">cancel</button>
+    </main>
+
+
+<script>
+    
+//function to make our html page function runable/usebale
+function loadImage() {
+  const path =  document.getElementById('imageURL').value;
+  console.log(path)
+
+  document.getElementById('profile').setAttribute('src', path);
+}
+
+</script>
+</body>
+</html>

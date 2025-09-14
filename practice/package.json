@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "web-vuln-scanner": "^1.0.10"
+  }
+}
