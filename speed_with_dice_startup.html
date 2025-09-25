@@ -76,15 +76,21 @@
 				// TODO: array indexing	
 				let offset = [-1, 1, -5, 5];
 				for (let i = 0; i < 4; i++) {
-					if (computer_hand[0] + offset[i] >= 9856 && computer_hand[0] + offset[i] <= 9861) {
-						computer_hand[0] = newCard;
-						break;
+					if (computerDiscard(discard_pile + offset[i])) {
+						return;
 					}
 				}
 			}
 
 			function computerDiscard(value) {
-				// TODO: discard by value with includes, indexOf, splice				
+				// TODO: discard by value with includes, indexOf, splice
+				if (computer_hand.includes(value)) {
+					let index = computer_hand.indexOf(value);
+					discard_pile = value;
+					computer_hand.splice(index, 1);
+					redraw();
+					return true;
+				}
 			}
 		
 			setInterval(computerPlay, 1000); 		
