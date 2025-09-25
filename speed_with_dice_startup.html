@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Speed with Dice</title>
+		<style>
+			.dice {
+				font-size: 100px;				
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Speed with Dice</h1>
+		<div id='computerArea'></div>
+		<div id='discardArea'></div>
+		<button onclick="discard_pile = getRandomCard(); redraw();">New Card</button>
+		<div id='playerArea'></div>		
+		
+		<script>
+			// TODO: Define empty arrays for each hand
+			let discard_pile;
+		
+			function getRandomCard() {
+				// 9856 = die 1
+				return 9856 + Math.floor(Math.random() * 6);
+			}
+		
+			function startup() {							
+				// TODO: Load hands with push
+				for (let i = 0; i < 5; i++) {
+					player_hand.push(getRandomCard());
+					computer_hand.push(getRandomCard());}
+				player_hand.push(getRandomCard());
+				computer_hand.push(getRandomCard());
+
+				discard_pile = getRandomCard();
+				redraw();
+			}
+			
+			function redraw() {
+				renderPile(player_hand, 'playerArea', true);
+				renderPile(computer_hand, 'computerArea');
+				renderPile([discard_pile], 'discardArea');
+				
+				// TODO: Determine winner with length
+			}
+			
+			function renderPile(hand, renderArea, clickable=false) {
+			
+				let output = '<p>';
+			
+				for (let i = 0; i < hand.length; i++) {
+					output += '<span class="dice"';
+					
+					if (clickable) 
+						output += 'onclick="discard(' + i + ')"';
+					
+					output += '>&#' + hand[i] + ';</span>';
+				}
+				
+				output += '</p>';
+			
+				document.getElementById(renderArea).innerHTML = output;
+			}
+
+			function discard(index) {
+				// TODO: discard by index
+				let diff  = Math.abs(player_hand[index] - discard_pile);
+				if (diff == 1 || diff == 5) {
+					discard_pile = player_hand;
+					player_hand.push(getRandomCard());
+					redraw();
+				}
+			}
+		
+			function computerPlay() {
+				// TODO: array indexing	
+				let offset = [-1, 1, -5, 5];
+				for (let i = 0; i < 4; i++) {
+					if (computer_hand[0] + offset[i] >= 9856 && computer_hand[0] + offset[i] <= 9861) {
+						computer_hand[0] = newCard;
+						break;
+					}
+				}
+			}
+
+			function computerDiscard(value) {
+				// TODO: discard by value with includes, indexOf, splice				
+			}
+		
+			setInterval(computerPlay, 1000); 		
+			startup();
+		</script>
+	</body>
+</html>

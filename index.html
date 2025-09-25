@@ -6,16 +6,36 @@
     <title>Document</title>
 </head>
 <body>
-    <section>
         <h1>Calculator For 2d & 3d Shape Of Circle</h1>
         <label>Enter Radius of the circle:</label>
-        <input id="radiii" type="text" placeholder="e.g 2">
-        <p>The Circle of 2D Shape Circle is: <span id="result2"></span></p>
+        <input id="radius" type="text" placeholder="e.g 2">
+        <p>The Circle of 2D Shape Circle is: <span id="result"></span></p>
         <button id="perimeter">Perimeter</button>
         <button id="area">Area</button>
         <button id="volume">Volume</button>
-    </section>
 
-    <script src="script.js"></script>
+    <script> 
+        var radiusInput = document.getElementById('radius');
+        var resultSpan = document.getElementById('result');
+
+        document.getElementById('perimeter').addEventListener('click', function() {
+            var r = radiusInput.value;
+            var perimeter = 2 * 3.14159 * r;
+            resultSpan.textContent = perimeter;
+        });
+
+        document.getElementById('area').addEventListener('click', function() {
+            var r = radiusInput.value;
+            var area = 3.14159 * r * r;
+            resultSpan.textContent = area;
+        });
+
+        document.getElementById('volume').addEventListener('click', function() {
+            var r = radiusInput.value;
+            var volume = 4 / 3 * 3.14159 * r * r * r;
+            resultSpan.textContent = volume;
+        });
+
+    </script>
 </body>
 </html>

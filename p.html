@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let favName = [27, 4221, 9, 1, 17];
+        console.log(favName);
+
+    let favBook = ["ramey " , "the alchemist", "the monk who sold his home", 22,33,2993];
+    favBook[0] = "The Tiger Cubes";
+    // console.log(favBook);
+
+    students = ["sam", "ram", "shyam"];
+
+
+    students.push("hari");
+    students.unshift("gita");
+
+
+    students.pop();
+    students.shift();
+
+    let index = students.indexOf("ram");
+    // console.log(index);
+
+    let inArray = students.includes("ram");
+    // console.log(inArray);
+
+    let studentsShallowCopy = students.slice(0,2);
+    // console.log(studentsShallowCopy);
+
+    let studentsLastHalf = students.slice(1);
+    // console.log(studentsLastHalf);
+
+    //splice(start_index, numbrerto remove, optionals replacemnt1)
+    // console.log(students);
+
+    students.splice(1,1,"krishna","sita"); //ad
+
+    //remove
+    // students.splice(2,0);
+    let lostSoul = students.splice(2,1);    
+    console.log(lostSoul);
+
+    //replace
+    students.splice(1,2,"exam");
+
+
+    console.log(students);
+
+    let studentString = students.join(", ");
+    // console.log(studentString);
+
+    let newStudents =["kisne","lalit" ,"nabjal"]
+    let allStudents = students.concat(newStudents);
+    console.log(allStudents);
+
+    for(let i=0; i<allStudents.length; i++){
+        console.log(allStudents[i] + " is at index " + i);
+    }
+
+    for (let inedex in allStudents){
+        console.log(index);
+    }
+
+    for (let value of allStudents){
+        console.log(value);
+    }
+    </script>
+</body>
+</html>

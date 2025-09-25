@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Number Guess</title>
+		<script>
+			let number;
+			let score = 0;
+			let tries = 0;
+
+			function getNewNumber()
+			{
+				number = parseInt(Math.random() * 100) + 1;
+			}
+
+			function quickNotes(){
+				//RELATION expression (==, !=, <, >, <=, >=) expression that evals to true or false
+
+
+				//==loose equality: performs type coercion before comparison
+				//===strict equality: no type coercion, must be same type and value
+
+				let x = 7.0;
+				// console.log(x === 5.3);
+
+
+				//js is what is called a "truthy" language
+				console.log( Boolean(0.0) ); //false
+			}
+			quickNotes();
+
+
+
+			let cheat = false;			
+			function toggleCheat()
+			{
+				// TODO: Setup cheat
+				cheat = !cheat;
+
+				if(!cheat) {
+					document.getElementById("showHint").innerHTML = "A new number is being generated.";
+					getNewNumber();
+				}
+
+				// let output;
+				// if (cheat) {
+				// 	output = number;
+				// 	document.getElementById("showHint").innerHTML = "Cheat mode enabled!";
+				// } else {
+				// 	output = "?";
+				// 	document.getElementById("showHint").innerHTML = "Type a number and press enter.";
+				// }
+
+				let output = (cheat)?number : "?";
+				document.getElementById("cheat").innerHTML = output;
+				document.getElementById("userInput").value = "";
+
+			}
+			
+			function displayHints()
+			{
+				let guess = document.getElementById("userInput").value;
+				let hints;
+
+				updateTries(); // Update tries counter for each guess
+
+				if(guess == number) {
+					hints = "That guess is correct!";
+					updateScore(true); // Award point for correct guess
+					getNewNumber(); // Generate a new number for next round
+				}
+				else if(guess < number){
+					hints = "That guess is too low.";
+					updateScore(false); // Deduct point for incorrect guess
+				}
+				else if(guess > number){
+					hints = "That guess is too high.";
+					updateScore(false); // Deduct point for incorrect guess
+				}
+				else {
+					hints = "That is not a valid guess.";
+				}
+				document.getElementById("showHint").innerHTML = hints;
+				document.getElementById("userInput").value = ""; // Clear input after each guess
+			}
+
+			updateScore = function(correct)
+			{
+				if(correct) {
+					score = score + 1;
+				} else {
+					score = score - 1;
+				}
+				document.getElementById("points").innerHTML = score;
+			}	
+
+			updateTries = function()
+			{
+				tries = tries + 1;
+				document.getElementById("attempts").innerHTML = tries;
+			}
+		</script>
+	</head>
+	<body onload="getNewNumber()">
+		<h1>Number Guess</h1>
+	
+		<p>I am thinking of a number between 1 and 100.<br>
+		Try and guess it.</p>
+		
+		<p>Hints: 
+			<span id="showHint">Type a number and press enter.</span></p>
+	
+		<p>Score: <span id="points">0</span></p>
+		<p>Attempts: <span id="attempts">0</span></p>
+	
+		<form onsubmit="displayHints(); return false;">
+			What is your guess:
+			<input id="userInput" type="text" autofocus>
+		</form>
+		
+		<input id="cheatbox" type="checkbox" onclick="toggleCheat()">
+		<label>Cheat: <span id="cheat">?</span></label>	
+	</body>
+</html>
+
+
+
+
+
+
+
