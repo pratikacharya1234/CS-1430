@@ -8,53 +8,28 @@
 <body>
     <h1>Arithmetic Mean Calculator</h1>
     
-    <div class="container">
+    <div>
         <h2>Data Entry</h2>
         
-        <div class="input-section">
-            <div class="input-group">
-                <label>Enter a value:</label>
-                <input type="text" id="valueInput" placeholder="Enter a number">
-                <button onclick="addValue()">Add Value</button>
-                <button onclick="removeValue()">Remove Value</button>
-            </div>
+        <div>
+            <label>Enter a value:</label>
+            <input type="text" id="valueInput" placeholder="Enter a number">
+            <button onclick="addValue()">Add Value</button>
+            <button onclick="removeValue()">Remove Value</button>
         </div>
         
         <div id="message"></div>
         
         <h3>Current Dataset</h3>
-        <div class="dataset-display" id="dataset">
-        </div>
+        <div id="dataset"></div>
         
-        <button class="compute-btn" onclick="computeMean()">Compute Mean</button>
+        <button onclick="computeMean()">Compute Mean</button>
         
         <h3>Current Mean</h3>
-        <div class="mean-display" id="meanResult">
-            Mean: Not calculated
-        </div>
-    </div>
-    
-    <div class="container">
-        <h2>Instructions</h2>
-        <div class="instructions">
-            <p><strong>How to use:</strong></p>
-            <ol>
-                <li>Enter numerical values in the input field</li>
-                <li>Click "Add Value" to add the number to your dataset</li>
-                <li>Click "Remove Value" to remove the last entered number</li>
-                <li>Click "Compute Mean" to calculate the arithmetic mean</li>
-            </ol>
-        </div>
-        
-        <div class="formula">
-            <strong>Arithmetic Mean Formula:</strong><br>
-            Mean = Σx / n<br>
-            <small>(Sum of all values divided by number of values)</small>
-        </div>
+        <div id="meanResult">Mean: Not calculated</div>
     </div>
 
     <script>
-        //array for storing data set
         let dataset = [];
         
         function addValue() {
@@ -68,7 +43,7 @@
                 showMessage('Please enter a value', 'error');
                 return;
             }
-            //converting to number and also will validaye
+            
             const numValue = parseFloat(value);
             
             if (isNaN(numValue)) {
@@ -81,7 +56,7 @@
             input.value = '';
             
             updateDatasetDisplay();
-            showMessage(`Value ${numValue} added successfully`, 'success');
+            showMessage('Value ' + numValue + ' added successfully', 'success');
             
             computeMean();
         }
@@ -100,7 +75,7 @@
                 }
                 
                 const removedValue = dataset.pop();
-                showMessage(`Last value (${removedValue}) removed successfully`, 'success');
+                showMessage('Last value (' + removedValue + ') removed successfully', 'success');
             } else {
                 const numValue = parseFloat(value);
                 
@@ -109,19 +84,21 @@
                     return;
                 }
                 
-                // Find and remove the specific value
                 const index = dataset.indexOf(numValue);
                 
                 if (index === -1) {
-                    showMessage(`Value ${numValue} not found in dataset`, 'error');
+                    showMessage('Value ' + numValue + ' not found in dataset', 'error');
                     return;
                 }
                 
                 dataset.splice(index, 1);
-                showMessage(`Value ${numValue} removed successfully`, 'success');
+                showMessage('Value ' + numValue + ' removed successfully', 'success');
             }
+            
             input.value = '';
+            
             updateDatasetDisplay();
+            
             computeMean();
         }
         
@@ -142,28 +119,22 @@
                 meanResultDiv.textContent = 'Mean: Cannot calculate (dataset is empty)';
                 return;
             }
+            
             let sum = 0;
             for (let i = 0; i < dataset.length; i++) {
                 sum += dataset[i];
             }
             
             const mean = sum / dataset.length;
-            meanResultDiv.innerHTML = `Mean: ${mean.toFixed(4)}`;
+            
+            meanResultDiv.innerHTML = 'Mean: ' + mean;
         }
         
         function showMessage(message, type) {
             const messageDiv = document.getElementById('message');
-            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
-            setTimeout(() => {
-                messageDiv.innerHTML = '';
-            }, 3000);
+            messageDiv.innerHTML = '<div>' + message + '</div>';
         }
         
-        document.getElementById('valueInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addValue();
-            }
-        });
         updateDatasetDisplay();
     </script>
 </body>
