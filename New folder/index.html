@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Heads or Tails Guessing Game</title>
+		<style>
+			.coin {
+				font-size: xxx-large;
+			}
+			
+			#message {
+				font-size: xx-large;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Coin Flip Gamble</h1>
+		<p>Guess heads or tails for the two coins I will flip two coins in the air.</p>
+
+		<ul>
+			<li>Cost to play: $2.00</li>
+		</ul>
+		
+		<h2>Payouts</h2>
+		<ul>
+			<li>Both correct: $4.00</li>
+			<li>One correct: $1.00</li>
+		</ul>
+		
+		<hr>
+		<p>Your Balance: $<span id="balance">100</span></p>
+		
+		<h2>Make your Guess</h2>
+		<p>Click each coin to toggle heads or tails.</p>
+		
+		<button id="coin-1" class="coin" onclick="toggleCoin1()"></button>
+		<button id="coin-2" class="coin" onclick="toggleCoin2()"></button><br><br>
+		
+		<button onclick="play()">Ready to Play!</button><br><br>
+		<span id="flip-1" class="coin"></span>
+		<span id="flip-2" class="coin"></span>
+
+		<p id="message"></p>
+
+		<script>
+			const HEADS = "&#x1FA99;";
+			const TAILS = "&#x26AB;";
+		
+			document.getElementById('coin-1').innerHTML = HEADS;
+			document.getElementById('coin-2').innerHTML = HEADS;
+		
+			let choice1 = 0;
+			let choice2 = 0;
+			let balance = 100;
+		
+			function toggleCoin1() {
+				clearFlips();
+				choice1 = Math.abs(choice1 - 1);
+
+				document.getElementById('coin-1').innerHTML =(choice1 === 0 )? HEADS : TAILS;
+				// TODO: Ternary operation to update choice
+			}
+			
+			function toggleCoin2() {
+				clearFlips();
+				choice2 = Math.abs(choice2 - 1);
+				document.getElementById('coin-2').innerHTML =(choice2 === 0 )? HEADS : TAILS;
+
+				// TODO: Ternary operation to update choice
+			}
+
+			function clearFlips() {
+				document.getElementById('flip-1').innerHTML = "";
+				document.getElementById('flip-2').innerHTML = "";
+				document.getElementById('message').textContent = "";
+			}
+
+			function play() {
+				balance -= 2;
+			
+				let flip1 = parseInt(Math.random() * 2);
+				let flip2 = parseInt(Math.random() * 2);
+				document.getElementById('flip-1').innerHTML = (flip1 === 0) ? HEADS : TAILS;
+				document.getElementById('flip-2').innerHTML = (flip2 === 0) ? HEADS : TAILS;	
+
+
+				if (balance < 2) {
+					message = "Sorry, you don't have enough money to play.";
+					document.getElementById('message').textContent = message;
+					return;
+				}
+				// TODO: Ternary operation to update flip
+				
+				let message = "";
+
+
+				// TODO: Nested if statements
+				if (flip1 === choice1 && flip2 === choice2) {
+					balance += 4;
+					message = "You guessed both right! You win $4.00";
+				} else if (flip1 === choice1 || flip2 === choice2) {
+					balance += 1;
+					message = "You guessed one right! You win $1.00";
+				} else {
+					message = "Sorry, you guessed none right.";
+				}
+
+				document.getElementById('balance').textContent = balance;
+				document.getElementById('message').textContent = message;
+			}		
+		</script>		
+	</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en-US">
+		<meta charset="UTF-8">
+		<title>RPS with Switch</title>
+		
+		<style>
+			button, p {
+				font-size: xx-large;
+			}
+		</style>
+		
+		<script>
+			function play(x) {
+				let y = Math.floor(Math.random() * 3);
+
+                let outputString = '';
+                outputString += 'You Choose ' + evaluate(x) + '.<br>';
+                outputString += 'The Computer Choose ' + evaluate(y) + '.<br><br>';
+
+
+                let z = (x**2 + x + 2*x*y + 3*y + y**2)  / 2;
+
+                switch (z) {
+                    case 0:
+                    case 4:
+                    case 12:
+                        outputString += 'It\'s a tie!';
+                        break;
+                    case 2:
+                    case 3:
+                    case 8:
+                        outputString += 'You win!';
+                        break;
+                    case 1:
+                    case 5:
+                    case 7:
+                        outputString += 'You lose!';
+                        break;
+                        
+                }   
+                // TODO: Switch with cantor pairing function to determine outcome
+                document.getElementById('outcome').innerHTML = outputString;
+
+
+			}
+			
+			function evaluate(value) {
+				// TODO: Switch to determine rock, paper, scissors
+				switch (value) {
+					case 0:
+						return 'Rock';
+					case 1:
+						return 'Paper';
+					case 2:
+						return 'Scissors';
+					default:
+						return '';
+				}
+			}
+		</script>		
+	</head>
+	<body>
+		<h1>Let's Play Rock, Paper, Scissors</h1>
+		<button onclick='play(0)'>&#129704;</button>
+		<button onclick='play(1)'>&#x1F4C3;</button>
+		<button onclick='play(2)'>&#9984;</button>
+		<p id='outcome'></p>
+	</body>
+</html>
+
+<!-- 
+Rock crushes scissors
+Paper covers rock
+Scissors cuts paper
+
+rock = 0
+paper = 1
+scissors = 2
+
+Cantor Pairing Function Results Table
+Player	Comp.	Output
+0		0		0
+0		1		2
+0		2		5
+1		0		1
+1		1		4
+1		2		8
+2		0		3
+2		1		7
+2		2		12
+-->

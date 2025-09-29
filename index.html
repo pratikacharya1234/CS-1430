@@ -3,39 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Arithmetic Mean Calculator</title>
 </head>
 <body>
-        <h1>Calculator For 2d & 3d Shape Of Circle</h1>
-        <label>Enter Radius of the circle:</label>
-        <input id="radius" type="text" placeholder="e.g 2">
-        <p>The Circle of 2D Shape Circle is: <span id="result"></span></p>
-        <button id="perimeter">Perimeter</button>
-        <button id="area">Area</button>
-        <button id="volume">Volume</button>
+    <h1>Arithmetic Mean Calculator</h1>
+    
+    <div class="container">
+        <h2>Data Entry</h2>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label>Enter a value:</label>
+                <input type="text" id="valueInput" placeholder="Enter a number">
+                <button onclick="addValue()">Add Value</button>
+                <button onclick="removeValue()">Remove Value</button>
+            </div>
+        </div>
+        
+        <div id="message"></div>
+        
+        <h3>Current Dataset</h3>
+        <div class="dataset-display" id="dataset">
+        </div>
+        
+        <button class="compute-btn" onclick="computeMean()">Compute Mean</button>
+        
+        <h3>Current Mean</h3>
+        <div class="mean-display" id="meanResult">
+            Mean: Not calculated
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Instructions</h2>
+        <div class="instructions">
+            <p><strong>How to use:</strong></p>
+            <ol>
+                <li>Enter numerical values in the input field</li>
+                <li>Click "Add Value" to add the number to your dataset</li>
+                <li>Click "Remove Value" to remove the last entered number</li>
+                <li>Click "Compute Mean" to calculate the arithmetic mean</li>
+            </ol>
+        </div>
+        
+        <div class="formula">
+            <strong>Arithmetic Mean Formula:</strong><br>
+            Mean = Σx / n<br>
+            <small>(Sum of all values divided by number of values)</small>
+        </div>
+    </div>
 
-    <script> 
-        var radiusInput = document.getElementById('radius');
-        var resultSpan = document.getElementById('result');
-
-        document.getElementById('perimeter').addEventListener('click', function() {
-            var r = radiusInput.value;
-            var perimeter = 2 * 3.14159 * r;
-            resultSpan.textContent = perimeter;
+    <script>
+        //array for storing data set
+        let dataset = [];
+        
+        function addValue() {
+            const input = document.getElementById('valueInput');
+            const value = input.value.trim();
+            const messageDiv = document.getElementById('message');
+            
+            messageDiv.innerHTML = '';
+            
+            if (value === '') {
+                showMessage('Please enter a value', 'error');
+                return;
+            }
+            //converting to number and also will validaye
+            const numValue = parseFloat(value);
+            
+            if (isNaN(numValue)) {
+                showMessage('Invalid input: Please enter a valid number', 'error');
+                return;
+            }
+            
+            dataset.push(numValue);
+            
+            input.value = '';
+            
+            updateDatasetDisplay();
+            showMessage(`Value ${numValue} added successfully`, 'success');
+            
+            computeMean();
+        }
+        
+        function removeValue() {
+            const input = document.getElementById('valueInput');
+            const value = input.value.trim();
+            const messageDiv = document.getElementById('message');
+            
+            messageDiv.innerHTML = '';
+            
+            if (value === '') {
+                if (dataset.length === 0) {
+                    showMessage('Dataset is empty - nothing to remove', 'error');
+                    return;
+                }
+                
+                const removedValue = dataset.pop();
+                showMessage(`Last value (${removedValue}) removed successfully`, 'success');
+            } else {
+                const numValue = parseFloat(value);
+                
+                if (isNaN(numValue)) {
+                    showMessage('Invalid input: Please enter a valid number to remove', 'error');
+                    return;
+                }
+                
+                // Find and remove the specific value
+                const index = dataset.indexOf(numValue);
+                
+                if (index === -1) {
+                    showMessage(`Value ${numValue} not found in dataset`, 'error');
+                    return;
+                }
+                
+                dataset.splice(index, 1);
+                showMessage(`Value ${numValue} removed successfully`, 'success');
+            }
+            input.value = '';
+            updateDatasetDisplay();
+            computeMean();
+        }
+        
+        function updateDatasetDisplay() {
+            const datasetDiv = document.getElementById('dataset');
+            
+            if (dataset.length === 0) {
+                datasetDiv.textContent = 'Dataset is empty';
+            } else {
+                datasetDiv.textContent = dataset.join(', ');
+            }
+        }
+        
+        function computeMean() {
+            const meanResultDiv = document.getElementById('meanResult');
+            
+            if (dataset.length === 0) {
+                meanResultDiv.textContent = 'Mean: Cannot calculate (dataset is empty)';
+                return;
+            }
+            let sum = 0;
+            for (let i = 0; i < dataset.length; i++) {
+                sum += dataset[i];
+            }
+            
+            const mean = sum / dataset.length;
+            meanResultDiv.innerHTML = `Mean: ${mean.toFixed(4)}`;
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        document.getElementById('valueInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addValue();
+            }
         });
-
-        document.getElementById('area').addEventListener('click', function() {
-            var r = radiusInput.value;
-            var area = 3.14159 * r * r;
-            resultSpan.textContent = area;
-        });
-
-        document.getElementById('volume').addEventListener('click', function() {
-            var r = radiusInput.value;
-            var volume = 4 / 3 * 3.14159 * r * r * r;
-            resultSpan.textContent = volume;
-        });
-
+        updateDatasetDisplay();
     </script>
 </body>
 </html>
