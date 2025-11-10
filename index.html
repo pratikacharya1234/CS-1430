@@ -3,139 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arithmetic Mean Calculator</title>
+    <title>My To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        body.dark {
+            background-color: #222;
+            color: #f5f5f5;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 400px;
+        }
+
+        body.dark input[type="text"] {
+            background: #444;
+            color: #f5f5f5;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            background-color: #90EE90;
+        }
+
+        body.dark li {
+            border-color: #555;
+            background-color: #2d5016;
+        }
+    </style>
 </head>
-<body>
-    <h1>Arithmetic Mean Calculator</h1>
-    
+<body class="light">
+    <h1>My To-Do List</h1>
+
     <div>
-        <h2>Data Entry</h2>
-        
-        <div>
-            <label>Enter a value:</label>
-            <input type="text" id="valueInput" placeholder="Enter a number">
-            <button onclick="addValue()">Add Value</button>
-            <button onclick="removeValue()">Remove Value</button>
-        </div>
-        
-        <div id="message"></div>
-        
-        <h3>Current Dataset</h3>
-        <div id="dataset"></div>
-        
-        <button onclick="computeMean()">Compute Mean</button>
-        
-        <h3>Current Mean</h3>
-        <div id="meanResult">Mean: Not calculated</div>
+        <button onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
 
+    <div id="quoteBox">
+        <p id="quote">Loading inspirational quote...</p>
+        <p id="author"></p>
+    </div>
+
+    <div>
+        <strong>Tasks added this session:</strong> <span id="sessionCount">0</span>
+    </div>
+
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter a new task..." />
+        <button id="addBtn" onclick="addTask()">Add Task</button>
+    </div>
+
+    <ul id="taskList">
+        <li>No tasks yet. Add one above!</li>
+    </ul>
+
     <script>
-        let dataset = [];
-        
-        function addValue() {
-            const input = document.getElementById('valueInput');
-            const value = input.value.trim();
-            const messageDiv = document.getElementById('message');
+        // Get motivational quote from API
+        function getQuote() {
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quote').textContent = '"' + data.content + '"';
+                    document.getElementById('author').textContent = '- ' + data.author;
+                })
+                .catch(error => {
+                    document.getElementById('quote').textContent = '"Believe you can and you\'re halfway there."';
+                    document.getElementById('author').textContent = '- Theodore Roosevelt';
+                });
+        }
+
+        // Load tasks from localStorage
+        function loadTasks() {
+            let tasks = localStorage.getItem('tasks');
+            if (tasks) {
+                return JSON.parse(tasks);
+            }
+            return [];
+        }
+
+        // Save tasks to localStorage
+        function saveTasks(tasks) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Display tasks on page
+        function displayTasks() {
+            let tasks = loadTasks();
+            let taskList = document.getElementById('taskList');
             
-            messageDiv.innerHTML = '';
-            
-            if (value === '') {
-                showMessage('Please enter a value', 'error');
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<li>No tasks yet. Add one above!</li>';
                 return;
             }
+
+            taskList.innerHTML = '';
             
-            const numValue = parseFloat(value);
+            for (let i = 0; i < tasks.length; i++) {
+                let li = document.createElement('li');
+                
+                let taskText = document.createElement('span');
+                taskText.textContent = tasks[i];
+                
+                let deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = (function(index) {
+                    return function() {
+                        deleteTask(index);
+                    };
+                })(i);
+                
+                li.appendChild(taskText);
+                li.appendChild(deleteBtn);
+                taskList.appendChild(li);
+            }
+        }
+
+        // Add a new task
+        function addTask() {
+            let input = document.getElementById('taskInput');
+            let taskText = input.value.trim();
             
-            if (isNaN(numValue)) {
-                showMessage('Invalid input: Please enter a valid number', 'error');
+            if (taskText === '') {
+                alert('Please enter a task!');
                 return;
             }
+
+            let tasks = loadTasks();
+            tasks.push(taskText);
+            saveTasks(tasks);
             
-            dataset.push(numValue);
+            // Update session count
+            let sessionCount = sessionStorage.getItem('taskCount') || 0;
+            sessionCount = parseInt(sessionCount) + 1;
+            sessionStorage.setItem('taskCount', sessionCount);
+            document.getElementById('sessionCount').textContent = sessionCount;
             
             input.value = '';
-            
-            updateDatasetDisplay();
-            showMessage('Value ' + numValue + ' added successfully', 'success');
-            
-            computeMean();
+            displayTasks();
         }
-        
-        function removeValue() {
-            const input = document.getElementById('valueInput');
-            const value = input.value.trim();
-            const messageDiv = document.getElementById('message');
+
+        // Delete a task
+        function deleteTask(index) {
+            let tasks = loadTasks();
+            tasks.splice(index, 1);
+            saveTasks(tasks);
+            displayTasks();
+        }
+
+        // Toggle theme (light/dark mode)
+        function toggleTheme() {
+            let body = document.body;
             
-            messageDiv.innerHTML = '';
-            
-            if (value === '') {
-                if (dataset.length === 0) {
-                    showMessage('Dataset is empty - nothing to remove', 'error');
-                    return;
-                }
-                
-                const removedValue = dataset.pop();
-                showMessage('Last value (' + removedValue + ') removed successfully', 'success');
+            if (body.className === 'light') {
+                body.className = 'dark';
+                // Save theme preference in cookie
+                document.cookie = 'theme=dark; max-age=31536000; path=/';
             } else {
-                const numValue = parseFloat(value);
-                
-                if (isNaN(numValue)) {
-                    showMessage('Invalid input: Please enter a valid number to remove', 'error');
+                body.className = 'light';
+                // Save theme preference in cookie
+                document.cookie = 'theme=light; max-age=31536000; path=/';
+            }
+        }
+
+        // Load theme from cookie
+        function loadTheme() {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith('theme=')) {
+                    let theme = cookie.substring(6);
+                    document.body.className = theme;
                     return;
                 }
-                
-                const index = dataset.indexOf(numValue);
-                
-                if (index === -1) {
-                    showMessage('Value ' + numValue + ' not found in dataset', 'error');
-                    return;
-                }
-                
-                dataset.splice(index, 1);
-                showMessage('Value ' + numValue + ' removed successfully', 'success');
-            }
-            
-            input.value = '';
-            
-            updateDatasetDisplay();
-            
-            computeMean();
-        }
-        
-        function updateDatasetDisplay() {
-            const datasetDiv = document.getElementById('dataset');
-            
-            if (dataset.length === 0) {
-                datasetDiv.textContent = 'Dataset is empty';
-            } else {
-                datasetDiv.textContent = dataset.join(', ');
             }
         }
-        
-        function computeMean() {
-            const meanResultDiv = document.getElementById('meanResult');
-            
-            if (dataset.length === 0) {
-                meanResultDiv.textContent = 'Mean: Cannot calculate (dataset is empty)';
-                return;
-            }
-            
-            let sum = 0;
-            for (let i = 0; i < dataset.length; i++) {
-                sum += dataset[i];
-            }
-            
-            const mean = sum / dataset.length;
-            
-            meanResultDiv.innerHTML = 'Mean: ' + mean;
+
+        // Load session count
+        function loadSessionCount() {
+            let count = sessionStorage.getItem('taskCount') || 0;
+            document.getElementById('sessionCount').textContent = count;
         }
-        
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.innerHTML = '<div>' + message + '</div>';
-        }
-        
-        updateDatasetDisplay();
+
+        // Allow Enter key to add task
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initialize app when page loads
+        window.onload = function() {
+            loadTheme();
+            displayTasks();
+            loadSessionCount();
+            getQuote();
+        };
     </script>
 </body>
 </html>
