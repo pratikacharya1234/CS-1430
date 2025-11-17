@@ -3,228 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My To-Do List</title>
+    <title>My Media Collection</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-
-        body.dark {
-            background-color: #222;
-            color: #f5f5f5;
+        
+        h1 {
+            text-align: center;
+            color: #333;
         }
-
-        button {
-            padding: 8px 16px;
-            margin: 5px;
-            cursor: pointer;
-            background-color: #4CAF50;
+        
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        #search-input {
+            width: 60%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px 0px 25px 0px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #search-input:focus {
+            border-color: #2a2ddb;
+        }
+        
+        .search-button {
+            padding: 12px 30px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #2325ce;
             color: white;
             border: none;
+            border-radius: 25px 0px 25px 0px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        .delete-btn {
-            background-color: #f44336;
+        
+        .search-button:hover {
+            background-color: #45a049;
         }
-
-        input[type="text"] {
-            padding: 8px;
-            width: 400px;
+        
+        #media-container {
+            display: flex;
+            flex-direction: column;
+            border-radius: 25px 0px 36px 25px;
+            gap: 20px;
+            margin-top: 30px;
         }
-
-        body.dark input[type="text"] {
-            background: #444;
-            color: #f5f5f5;
+        
+        .media-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        ul {
-            list-style: none;
-            padding: 0;
+        
+        .media-item img {
+            width: 100px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
         }
-
-        li {
-            padding: 10px;
+        
+        .media-info {
+            flex: 1;
+        }
+        
+        .media-info h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .media-info p {
             margin: 5px 0;
-            border: 1px solid #ccc;
-            background-color: #90EE90;
-        }
-
-        body.dark li {
-            border-color: #555;
-            background-color: #2d5016;
+            color: #555;
         }
     </style>
 </head>
-<body class="light">
-    <h1>My To-Do List</h1>
-
-    <div>
-        <button onclick="toggleTheme()">Toggle Dark Mode</button>
+<body>
+    <h1>Video Game Collection</h1>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search by title, developer, or year...">
+        <button class="search-button" onclick="searchMedia()">Search</button>
     </div>
-
-    <div id="quoteBox">
-        <p id="quote">Loading inspirational quote...</p>
-        <p id="author"></p>
+    
+    <div id="media-container">
+        <!-- Media items will be added here by JavaScript -->
     </div>
-
-    <div>
-        <strong>Tasks added this session:</strong> <span id="sessionCount">0</span>
-    </div>
-
-    <div>
-        <input type="text" id="taskInput" placeholder="Enter a new task..." />
-        <button id="addBtn" onclick="addTask()">Add Task</button>
-    </div>
-
-    <ul id="taskList">
-        <li>No tasks yet. Add one above!</li>
-    </ul>
 
     <script>
-        // Get motivational quote from API
-        function getQuote() {
-            fetch('https://api.quotable.io/random')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('quote').textContent = '"' + data.content + '"';
-                    document.getElementById('author').textContent = '- ' + data.author;
-                })
-                .catch(error => {
-                    document.getElementById('quote').textContent = '"Believe you can and you\'re halfway there."';
-                    document.getElementById('author').textContent = '- Theodore Roosevelt';
-                });
-        }
-
-        // Load tasks from localStorage
-        function loadTasks() {
-            let tasks = localStorage.getItem('tasks');
-            if (tasks) {
-                return JSON.parse(tasks);
+        // Part 1: Creating Pseudo-Data in JSON Format
+        const mediaData = [
+            {
+                "title": "The Legend of Zelda: Breath of the Wild",
+                "developer": "Nintendo",
+                "price": 59.99,
+                "year": 2017,
+                "image": "aa.jpg"
+            },
+            {
+                "title": "Red Dead Redemption 2",
+                "developer": "Rockstar Games",
+                "price": 49.99,
+                "year": 2018,
+                "image": "bb.jpg"
+            },
+            {
+                "title": "Elden Ring",
+                "developer": "FromSoftware",
+                "price": 59.99,
+                "year": 2022,
+                "image": "cc.jpeg"
             }
-            return [];
-        }
+        ];
 
-        // Save tasks to localStorage
-        function saveTasks(tasks) {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
-        // Display tasks on page
-        function displayTasks() {
-            let tasks = loadTasks();
-            let taskList = document.getElementById('taskList');
+        // Part 2: Defining the Media Class
+        class MediaItem {
+            // Private field for encapsulation
+            #rating;
             
-            if (tasks.length === 0) {
-                taskList.innerHTML = '<li>No tasks yet. Add one above!</li>';
-                return;
+            constructor(title, developer, price, year, image) {
+                this.title = title;
+                this.developer = developer;
+                this.price = price;
+                this.year = year;
+                this.image = image;
+                this.#rating = 0;
             }
-
-            taskList.innerHTML = '';
             
-            for (let i = 0; i < tasks.length; i++) {
-                let li = document.createElement('li');
-                
-                let taskText = document.createElement('span');
-                taskText.textContent = tasks[i];
-                
-                let deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.onclick = (function(index) {
-                    return function() {
-                        deleteTask(index);
-                    };
-                })(i);
-                
-                li.appendChild(taskText);
-                li.appendChild(deleteBtn);
-                taskList.appendChild(li);
+            // Getter method
+            getRating() {
+                return this.#rating;
             }
-        }
-
-        // Add a new task
-        function addTask() {
-            let input = document.getElementById('taskInput');
-            let taskText = input.value.trim();
             
-            if (taskText === '') {
-                alert('Please enter a task!');
-                return;
-            }
-
-            let tasks = loadTasks();
-            tasks.push(taskText);
-            saveTasks(tasks);
-            
-            // Update session count
-            let sessionCount = sessionStorage.getItem('taskCount') || 0;
-            sessionCount = parseInt(sessionCount) + 1;
-            sessionStorage.setItem('taskCount', sessionCount);
-            document.getElementById('sessionCount').textContent = sessionCount;
-            
-            input.value = '';
-            displayTasks();
-        }
-
-        // Delete a task
-        function deleteTask(index) {
-            let tasks = loadTasks();
-            tasks.splice(index, 1);
-            saveTasks(tasks);
-            displayTasks();
-        }
-
-        // Toggle theme (light/dark mode)
-        function toggleTheme() {
-            let body = document.body;
-            
-            if (body.className === 'light') {
-                body.className = 'dark';
-                // Save theme preference in cookie
-                document.cookie = 'theme=dark; max-age=31536000; path=/';
-            } else {
-                body.className = 'light';
-                // Save theme preference in cookie
-                document.cookie = 'theme=light; max-age=31536000; path=/';
-            }
-        }
-
-        // Load theme from cookie
-        function loadTheme() {
-            let cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.startsWith('theme=')) {
-                    let theme = cookie.substring(6);
-                    document.body.className = theme;
-                    return;
+            // Setter method with validation
+            setRating(value) {
+                if (value >= 0 && value <= 10) {
+                    this.#rating = value;
+                } else {
+                    console.log("Rating must be between 0 and 10");
                 }
             }
-        }
-
-        // Load session count
-        function loadSessionCount() {
-            let count = sessionStorage.getItem('taskCount') || 0;
-            document.getElementById('sessionCount').textContent = count;
-        }
-
-        // Allow Enter key to add task
-        document.getElementById('taskInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addTask();
+            
+            // Method to return string representation
+            getInfo() {
+                return `${this.title} by ${this.developer}`;
             }
+            
+            // Method to generate and return HTML element
+            displayHTML() {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'media-item';
+                
+                itemDiv.innerHTML = `
+                    <img src="${this.image}" alt="${this.title}">
+                    <div class="media-info">
+                        <h3>${this.title}</h3>
+                        <p><strong>Developer:</strong> ${this.developer}</p>
+                        <p><strong>Price:</strong> $${this.price.toFixed(2)}</p>
+                        <p><strong>Release Year:</strong> ${this.year}</p>
+                    </div>
+                `;
+                
+                return itemDiv;
+            }
+        }
+
+        // Part 3: Displaying the Media Collection
+        function displayMediaCollection() {
+            const container = document.getElementById('media-container');
+            
+            // Loop through the JSON data and create instances
+            mediaData.forEach(item => {
+                const mediaItem = new MediaItem(
+                    item.title,
+                    item.developer,
+                    item.price,
+                    item.year,
+                    item.image
+                );
+                
+                // Add the HTML element to the page
+                container.appendChild(mediaItem.displayHTML());
+            });
+        }
+
+        // Search function to filter media items
+        function searchMedia() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const container = document.getElementById('media-container');
+            
+            // Clear the container
+            container.innerHTML = '';
+            
+            // Filter and display matching items
+            const filteredData = mediaData.filter(item => {
+                return item.title.toLowerCase().includes(searchTerm) ||
+                       item.developer.toLowerCase().includes(searchTerm) ||
+                       item.year.toString().includes(searchTerm);
+            });
+            
+            // Display filtered results
+            if (filteredData.length > 0) {
+                filteredData.forEach(item => {
+                    const mediaItem = new MediaItem(
+                        item.title,
+                        item.developer,
+                        item.price,
+                        item.year,
+                        item.image
+                    );
+                    container.appendChild(mediaItem.displayHTML());
+                });
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">No results found. Try a different search term.</p>';
+            }
+        }
+
+        // Allow search on Enter key press
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('search-input').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    searchMedia();
+                }
+            });
         });
 
-        // Initialize app when page loads
-        window.onload = function() {
-            loadTheme();
-            displayTasks();
-            loadSessionCount();
-            getQuote();
-        };
+        // Call the function when page loads
+        window.onload = displayMediaCollection;
     </script>
 </body>
 </html>

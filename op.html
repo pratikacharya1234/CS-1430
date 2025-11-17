@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        body.dark {
+            background-color: #222;
+            color: #f5f5f5;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 400px;
+        }
+
+        body.dark input[type="text"] {
+            background: #444;
+            color: #f5f5f5;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            background-color: #90EE90;
+        }
+
+        body.dark li {
+            border-color: #555;
+            background-color: #2d5016;
+        }
+    </style>
+</head>
+<body class="light">
+    <h1>My To-Do List</h1>
+
+    <div>
+        <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+
+    <div id="quoteBox">
+        <p id="quoteText">Loading inspirational quote...</p>
+        <p id="author"></p>
+    </div>
+
+    <div>
+        <strong>Tasks added this session:</strong> <span id="sessionCount">0</span>
+    </div>
+
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter a new task..." />
+        <button id="addBtn" onclick="addTask()">Add Task</button>
+    </div>
+
+    <ul id="taskList">
+        <li>No tasks yet. Add one above!</li>
+    </ul>
+
+    <script>
+        // Get motivational quote from API
+        function getQuote() {
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quoteText').textContent = '"' + data.content + '"';
+                    document.getElementById('author').textContent = '- ' + data.author;
+                })
+                .catch(error => {
+                    document.getElementById('quoteText').textContent = '"Believe you can and you\'re halfway there."';
+                    document.getElementById('author').textContent = '- Theodore Roosevelt';
+                });
+        }
+
+        // Load tasks from localStorage
+        function loadTasks() {
+            let tasks = localStorage.getItem('tasks');
+            if (tasks) {
+                return JSON.parse(tasks);
+            }
+            return [];
+        }
+
+        // Save tasks to localStorage
+        function saveTasks(tasks) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Display tasks on page
+        function displayTasks() {
+            let tasks = loadTasks();
+            let taskList = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<li>No tasks yet. Add one above!</li>';
+                return;
+            }
+
+            taskList.innerHTML = '';
+            
+            for (let i = 0; i < tasks.length; i++) {
+                let li = document.createElement('li');
+                
+                let taskText = document.createElement('span');
+                taskText.textContent = tasks[i];
+                
+                let deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = (function(index) {
+                    return function() {
+                        deleteTask(index);
+                    };
+                })(i);
+                
+                li.appendChild(taskText);
+                li.appendChild(deleteBtn);
+                taskList.appendChild(li);
+            }
+        }
+
+        // Add a new task
+        function addTask() {
+            let input = document.getElementById('taskInput');
+            let taskText = input.value.trim();
+            
+            if (taskText === '') {
+                alert('Please enter a task!');
+                return;
+            }
+
+            let tasks = loadTasks();
+            tasks.push(taskText);
+            saveTasks(tasks);
+            
+            // Update session count
+            let sessionCount = sessionStorage.getItem('taskCount') || 0;
+            sessionCount = parseInt(sessionCount) + 1;
+            sessionStorage.setItem('taskCount', sessionCount);
+            document.getElementById('sessionCount').textContent = sessionCount;
+            
+            input.value = '';
+            displayTasks();
+        }
+
+        // Delete a task
+        function deleteTask(index) {
+            let tasks = loadTasks();
+            tasks.splice(index, 1);
+            saveTasks(tasks);
+            displayTasks();
+        }
+
+        // Toggle theme (light/dark mode)
+        function toggleTheme() {
+            let body = document.body;
+            
+            if (body.className === 'light') {
+                body.className = 'dark';
+                // Save theme preference in cookie
+                document.cookie = 'theme=dark; max-age=31536000; path=/';
+            } else {
+                body.className = 'light';
+                // Save theme preference in cookie
+                document.cookie = 'theme=light; max-age=31536000; path=/';
+            }
+        }
+
+        // Load theme from cookie
+        function loadTheme() {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith('theme=')) {
+                    let theme = cookie.substring(6);
+                    document.body.className = theme;
+                    return;
+                }
+            }
+        }
+
+        // Load session count
+        function loadSessionCount() {
+            let count = sessionStorage.getItem('taskCount') || 0;
+            document.getElementById('sessionCount').textContent = count;
+        }
+
+        // Allow Enter key to add task
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initialize app when page loads
+        window.onload = function() {
+            loadTheme();
+            displayTasks();
+            loadSessionCount();
+            getQuote();
+        };
+    </script>
+</body>
+</html>
